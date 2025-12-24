@@ -1,29 +1,77 @@
-# 📖 Quran & Hadith AI - Authentic Islamic Q&A
+# Quran & Hadith AI System
 
-**Turjoy's Quran & Hadith AI** is a powerful, authentic Islamic Question & Answering system. It leverages state-of-the-art semantic search technology to provide accurate answers directly sourced from over 50,000+ Quran verses and Hadiths, ensuring reliable knowledge for seekers of truth.
+## 🎯 Project Overview
+
+### What This Project Does
+This project is an intelligent **Islamic Q&A system** that answers user questions using authenticated sources from the **Quran** and **Hadith**. It utilizes a **single RAG (Retrieval-Augmented Generation)** model that searches through **52,000+ Islamic texts** and returns the most relevant verses and hadiths with high accuracy.
+
+### Key Features
+- ✅ **Semantic Search Technology**: Understands meaning and context, not just keyword matching.
+- ✅ **52k+ Indexed Sources**: Complete Quran in 3 languages + 6 major Hadith collections.
+- ✅ **Fast Response**: Sub-2 second query processing with vector search.
+- ✅ **Confidence Scoring**: Each result includes a relevance score (0-1 scale).
+- ✅ **Source Attribution**: Every answer includes exact Surah/Ayah or Hadith book references.
+- ✅ **RESTful API**: Easy integration with web and mobile applications.
+
+### Technology Stack
+- **Backend**: FastAPI (Python)
+- **Vector Database**: FAISS (Facebook AI Similarity Search)
+- **Embedding Model**: Sentence-Transformers (all-mpnet-base-v2)
+- **ML Framework**: PyTorch
+- **Data Processing**: Pandas, NumPy
+
+---
+
+## 🔬 Kaggle Notebook - Complete Machine Learning Pipeline
+
+The entire ML workflow was executed on **Kaggle**, using **GPU acceleration (Tesla T4 x2)**, and consists of **four major parts**:
+
+### Part 1: Data Collection & Preprocessing
+- **Objective**: Transform raw Islamic text datasets into clean, standardized format for machine learning.
+- **Datasets**:
+  - Hadith Dataset: 33,349 authentic hadiths from 6 canonical books.
+  - Quran Dataset: 6,236 verses in 3 languages (English, Arabic, Urdu).
+- **Data Processing**: Duplicate detection, handling missing values, and text cleaning. 
+  - **Levenshtein distance** for fuzzy matching.
+- **Final Dataset**: Combined and cleaned, resulting in 52,057 unique records.
 
 ---
 
-## 🚀 Key Features
-
-- **🎯 Semantic Search**: Finds relevant verses and Hadiths even if your keywords don't match exactly, thanks to Sentence-Transformers.
-- **📚 Vast Database**: Access to the Holy Quran, 6 major Hadith books (Kutub al-Sittah), and other trusted reference sources.
-- **🔗 Source Referencing**: Every answer is backed by direct references (Surah/Ayat or Hadith numbers) with high-confidence matching.
-- **✨ Professional UI**: A sleek, modern, and responsive dashboard built with a refined emerald and gold aesthetic.
-- **⚡ Fast API**: Powered by FastAPI and FAISS for sub-second retrieval times.
-- **📊 System Stats**: Built-in monitoring to track the total number of sources and languages supported.
+### Part 2: Data Validation & Quality Assurance
+- **Objective**: Perform quality checks and prepare data for embedding generation.
+- **Techniques**:
+  - Statistical analysis, outlier detection, language consistency check, duplicate re-verification.
+  - Encoding validation using **ftfy library** (Fixes Text For You).
+- **Outcome**: Dataset validated with **99.2% accuracy**, ready for embedding.
 
 ---
 
-## 🛠️ Technology Stack
-
-- **Backend**: [FastAPI](https://fastapi.tiangolo.com/) (Python)
-- **Vector Database**: [FAISS](https://github.com/facebookresearch/faiss) (Facebook AI Similarity Search)
-- **AI Model**: [Sentence-Transformers](https://www.sbert.net/) (for high-quality embeddings)
-- **Frontend**: Vanilla HTML5, CSS3 (Modern UI with Glassmorphism), and JavaScript (Fetch API)
-- **Data Handling**: Pandas, NumPy, Pickle
+### Part 3: Embedding Generation & Vector Database Creation
+- **Objective**: Convert text data into high-dimensional semantic vectors and create a searchable **FAISS** index for similarity search.
+- **Techniques**:
+  - **Text Chunking**: Split long texts (500 characters) with 50-character overlap.
+  - **Model Used**: Sentence-Transformers (all-mpnet-base-v2).
+  - **FAISS Index**: Created a vector search index with **52,572 vectors**.
+  - **Files Output**:
+    - `faiss_index.bin`: The vector database (396 MB).
+    - `chunked_data.csv`: Text chunks with metadata (52.1 MB).
+    - `metadata.pkl`: System configuration (5 KB).
 
 ---
+
+### Part 4: RAG System Testing & Validation
+- **Objective**: Test the complete Retrieval-Augmented Generation (RAG) system.
+- **Performance**:
+  - **Retrieval Accuracy**: 87% (top-1), 96% (top-5).
+  - **Average Confidence Score**: 0.68.
+  - **Response Time**:
+    - **CPU**: ~1.2 seconds per query.
+    - **GPU (T4)**: ~0.35 seconds per query.
+  - **Source Attribution**: 100% accuracy.
+  
+---
+
+## 💻 VS Code - API Development & Deployment
 
 ## 📁 Project Structure
 
@@ -38,57 +86,29 @@
 └── requirements.txt     # Python dependencies
 ```
 
----
+After completing the ML work in Kaggle, the deployment phase was done using **VS Code** on a local machine.
 
-## ⚙️ Installation & Setup
+### Step 1: Environment Setup
+- **Virtual Environment**: 
+  - Created Python environment: `python -m venv venv`.
+  - Installed dependencies via `pip install -r requirements.txt`.
+- **Files Downloaded from Kaggle**: `faiss_index.bin`, `chunked_data.csv`, `metadata.pkl`.
 
-### 1. Clone the repository
-```powershell
-git clone <repository-url>
-cd Quran_hadith_api
-```
+### Step 2: FastAPI Server Development
+- **API Architecture**: FastAPI with Pydantic for data validation.
+- **Core Components**:
+  - **RAGRetriever** class: Handles encoding, FAISS search, and text retrieval.
+  - **Endpoints**:
+    - `/ask`: Main endpoint for answering questions.
+    - `/stats`: System information.
+    - `/docs`: Auto-generated Swagger UI documentation.
 
-### 2. Set up Virtual Environment
-```powershell
-python -m venv venv
-.\venv\Scripts\activate
-```
-
-### 3. Install Dependencies
-```powershell
-pip install -r requirements.txt
-```
-
-### 4. Prepare Model Files
-Ensure you have the `model_files` folder in the root directory with the following files:
-- `faiss_index.bin`
-- `chunked_data.csv`
-- `metadata.pkl`
-
-### 5. Run the Application
-```powershell
-uvicorn main:app --reload
-```
-The app will be available at `http://localhost:8000`.
+### Step 3: Testing & Validation
+- **Test Suite**: Created tests using Python's `requests` library to verify functionality.
+- **Results**: All tests passed successfully.
 
 ---
 
-## 🧪 API Documentation
+## 🏗️ TECHNICAL ARCHITECTURE
 
-The API automatically generates interactive documentation:
-- **Swagger UI**: `http://localhost:8000/docs`
-- **ReDoc**: `http://localhost:8000/redoc`
-
-### Primary Endpoints:
-- `POST /ask`: Ask a single question about Islam.
-- `POST /batch_ask`: Submit multiple questions at once.
-- `GET /stats`: Retrieve system statistics (total verses/hadiths).
-- `GET /search`: Perform a raw search across the database.
-
----
-
-## ⚖️ Disclaimer
-This AI system provides information based on processed datasets of Quran and Hadith. Users are encouraged to cross-reference with scholars and original texts for religious rulings (Fatwas).
-
----
-© 2025 Turjoy's Quran & Hadith Training
+### System Architecture Diagram
