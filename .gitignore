@@ -1,0 +1,7 @@
+# Ignore the model_files directory
+model_files/
+
+# Optionally, ignore specific file types inside the model_files folder
+*.csv
+*.bin
+*.pkl
