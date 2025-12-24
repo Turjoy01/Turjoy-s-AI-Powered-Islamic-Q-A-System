@@ -173,3 +173,4 @@ This project demonstrates how **AI techniques** can be applied to **Islamic scho
 ---
 
 This README structure should now reflect a **GitHub-style** approach, with clear sections and markdown formatting for easy readability.
+<img width="1899" height="936" alt="image" src="https://github.com/user-attachments/assets/ff789065-1f7b-4b79-8b5b-6b0780bdc45f" />
